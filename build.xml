@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE project [
+]>
+
+<project name="Junit_Ant" default="usage" basedir=".">  
+
+<!-- ========== Initialize Properties =================================== -->
+    <property environment="env"/>
+    
+    <property name="ws.home" value="${basedir}"/>
+	<property name="ws.jars" value="D:\Lib"/>
+    <property name="test.dest" value="${ws.home}/build"/>
+    <property name="test.src" value="${ws.home}/src"/>
+	<property name="test.reportsDir" value="${ws.home}/Reports"/>
+
+
+	<path id="testcase.path">
+	    <pathelement location="${test.dest}"/>
+
+	    <fileset dir="${ws.jars}">
+	      <include name="*.jar"/>
+	    </fileset>
+
+	  </path>
+
+    
+    <!--target name="start-selenium-server">
+        <java jar="${ws.home}/lib/selenium-server.jar"/>
+    </target-->
+
+    <target name="setClassPath" unless="test.classpath">
+        <path id="classpath_jars">
+            <fileset dir="${ws.jars}" includes="*.jar"/>
+        </path>
+        <pathconvert pathsep=":" 
+            property="test.classpath" 
+            refid="classpath_jars"/>
+    </target>
+
+    <target name="init" depends="setClassPath">
+        <tstamp>
+            <format property="start.time" pattern="MM/dd/yyyy hh:mm aa" />
+        </tstamp>
+        <condition property="ANT" 
+            value="${env.ANT_HOME}/bin/ant.bat" 
+            else="${env.ANT_HOME}/bin/ant">
+                    <os family="windows" />
+        </condition>
+        
+    </target>
+  
+    <!-- all -->
+    <target name="all">
+    </target>
+
+    <!-- clean -->
+    <target name="clean">
+        <delete dir="${test.dest}"/>
+    </target>
+
+    <!-- compile -->
+    <target name="compile" depends="init, clean" > 
+		<delete includeemptydirs="true" quiet="true">
+            <fileset dir="${test.dest}" includes="**/*"/>
+		</delete>
+        <echo message="making directory..."/>
+		<mkdir dir="${test.dest}"/>
+        <echo message="classpath------: ${test.classpath}"/>
+        <echo message="compiling..."/>
+        <javac 
+            debug="true" 
+            destdir="${test.dest}" 
+            srcdir="${test.src}" 
+            target="1.7" 
+            classpath="${test.classpath}"
+        >
+        </javac>
+      </target>
+
+    <!-- build -->
+    <target name="build" depends="init">
+    </target>
+
+   
+	  
+
+    <target name="usage">
+        <echo>
+            ant run will execute the test
+        </echo>
+    </target>
+
+	<path id="test.c">
+	        <fileset dir="${ws.jars}" includes="*.jar"/>
+	</path>
+	
+	  
+	
+	<target name="run" >  
+		<delete includeemptydirs="true" quiet="true">
+		            <fileset dir="${test.reportsDir}" includes="**/*"/>
+				</delete>
+			    <java jar="${ws.jars}" fork="true" spawn="true" />  
+			    <junit fork="yes" haltonfailure="no" printsummary="yes">
+				    <classpath refid="testcase.path" />  
+
+			      <!--  <classpath ="${test.classpath}"/> -->  
+			    <batchtest  todir="${test.reportsDir}" fork="true">  
+			    <fileset dir="${test.dest}">  
+			       
+			  <!--include name="tests/LoginTest.class" />
+			 <include name="tests/Parameterized_Test.class" />
+			 <include name="tests/TestApplication.class" /-->
+			  
+			  <include name="tests/AllTests.class" />
+
+			    </fileset>  
+			    </batchtest>    
+			        <formatter type="xml" />  
+				    <classpath refid="testcase.path" />  
+			</junit>  
+			    <junitreport todir="${test.reportsDir}">    
+			        <fileset dir="${test.reportsDir}">  
+			            <include name="TEST-*.xml" />  
+			        </fileset>  
+			        <report todir="${test.reportsDir}" />  
+			    </junitreport>  
+			</target>
+
+	
+</project>
