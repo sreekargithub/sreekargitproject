@@ -6,9 +6,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 <<<<<<< HEAD
 
-//Anuhya
+//Anu
 =======
-// this is the git hub testing modification
+// this is the git hub testing
 <<<<<<< HEAD
 
 
