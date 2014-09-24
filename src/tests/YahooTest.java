@@ -9,7 +9,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class YahooTest {
 	WebDriver driver;
-	@Before
+	@Before //ajay added this comment 
 		public void setUp() throws Exception {
 			driver = new FirefoxDriver();
 			driver.manage().window().maximize();
